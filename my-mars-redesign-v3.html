@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>My MARS — Media Center · Priya</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  /* Mars exact palette */
+  --navy:#080C1E;
+  --card-dark:#0D1235;
+  --hero-l:#1E2B7A;
+  --hero-r:#3B28C8;
+  --ticker:#1DB87A;
+  --rail-bg:#F2F2FF;
+  --rail-card:#FFFFFF;
+  --assoc-card:#FFF8F0;   /* warm tint for associate content */
+  --corp-card:#FFFFFF;
+  --blue-deep:#1B3BA8;
+  --orange:#F5A623;
+  --red:#E8453C;
+  --green:#2CB87A;
+  --purple:#7C3AED;
+  --purple-l:#A78BFA;
+  --brd:rgba(255,255,255,.1);
+  --brl:rgba(0,0,0,.08);
+  --tw6:rgba(255,255,255,.6);
+  --tw3:rgba(255,255,255,.3);
+  --dk:#111827;
+  --dk5:#6B7280;
+  --dk3:#9CA3AF;
+}
+html,body{min-height:100vh;background:var(--navy);color:#fff;font-family:'DM Sans',sans-serif;overflow-x:clip;}
+::-webkit-scrollbar{width:5px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:3px;}
+
+/* PROGRESS BAR */
+#read-progress{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--hero-l),var(--hero-r));z-index:9999;transition:width .1s;}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes tickerScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+@keyframes livePulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:.4}}
+@keyframes waveAnim{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.3)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes tabSlide{from{width:0}to{width:100%}}
+@keyframes bookmarkPop{0%{transform:scale(1)}50%{transform:scale(1.4)}100%{transform:scale(1)}}
+@keyframes voiceRing{0%,100%{box-shadow:0 0 0 0 rgba(29,184,122,.4)}70%{box-shadow:0 0 0 8px rgba(29,184,122,0)}}
+
+.fu{animation:fadeUp .5s ease both;}
+.d1{animation-delay:.05s}.d2{animation-delay:.12s}.d3{animation-delay:.2s}
+.d4{animation-delay:.28s}.d5{animation-delay:.36s}.d6{animation-delay:.44s}
+
+/* ══ NAV ══ */
+.nav{position:fixed;top:3px;left:0;right:0;z-index:300;height:58px;display:flex;align-items:center;padding:0 24px;background:rgba(8,12,30,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--brd);}
+.logo{display:flex;align-items:center;gap:10px;margin-right:28px;cursor:pointer;}
+.logo-m{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,var(--hero-l),var(--hero-r));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;}
+.logo-t{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;}
+.logo-s{font-size:8px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--tw3);display:block;}
+.srch{flex:1;max-width:440px;display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.06);border:1px solid var(--brd);border-radius:10px;padding:0 13px;height:36px;transition:.2s;}
+.srch:focus-within{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.22);}
+.srch input{background:none;border:none;outline:none;color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;width:100%;}
+.srch input::placeholder{color:var(--tw3);}
+/* AI mode toggle */
+.ai-mode-toggle{display:flex;align-items:center;gap:8px;margin-left:20px;background:rgba(255,255,255,.06);border:1px solid var(--brd);border-radius:20px;padding:5px 12px;cursor:pointer;transition:.2s;user-select:none;}
+.ai-mode-toggle:hover{background:rgba(255,255,255,.1);}
+.ai-toggle-dot{width:10px;height:10px;border-radius:50%;background:var(--dk5);transition:.3s;}
+.ai-mode-toggle.active .ai-toggle-dot{background:var(--purple-l);box-shadow:0 0 6px var(--purple-l);}
+.ai-mode-toggle span{font-size:11px;font-weight:600;color:var(--tw6);}
+.ai-mode-toggle.active span{color:var(--purple-l);}
+.nav-r{margin-left:auto;display:flex;align-items:center;gap:14px;}
+.nav-r a{font-size:12px;color:var(--tw6);cursor:pointer;}
+.ibt{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.07);border:1px solid var(--brd);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;color:var(--tw6);position:relative;}
+.nbadge{position:absolute;top:-4px;right:-4px;width:14px;height:14px;border-radius:50%;background:var(--red);border:2px solid var(--navy);font-size:7px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+.av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#6366F1,#8B5CF6);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;cursor:pointer;border:2px solid rgba(255,255,255,.2);}
+
+/* ══ NAV2 sticky ══ */
+.nav2{position:fixed;top:61px;left:0;right:0;z-index:299;height:40px;background:linear-gradient(90deg,var(--hero-l),var(--hero-r));display:flex;align-items:center;padding:0 24px;}
+.n2{height:40px;display:flex;align-items:center;padding:0 13px;font-size:12px;font-weight:500;color:rgba(255,255,255,.75);cursor:pointer;border:none;background:none;font-family:'DM Sans',sans-serif;border-bottom:2px solid transparent;transition:.15s;}
+.n2:hover{color:#fff;}
+.n2.on{color:#fff;border-bottom-color:#fff;}
+.n2-r{margin-left:auto;display:flex;gap:16px;}
+.n2-r span{font-size:12px;color:rgba(255,255,255,.7);cursor:pointer;}
+
+/* ══ TICKER ══ */
+.ticker{position:fixed;top:101px;left:0;right:0;z-index:298;height:32px;background:var(--ticker);display:flex;align-items:center;overflow:hidden;}
+.tk-lbl{padding:0 12px;font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#fff;white-space:nowrap;border-right:1px solid rgba(255,255,255,.3);height:100%;display:flex;align-items:center;gap:5px;flex-shrink:0;}
+.tk-wrap{overflow:hidden;flex:1;}
+.tk-track{display:flex;white-space:nowrap;animation:tickerScroll 34s linear infinite;}
+.tk-i{font-size:11px;color:#fff;padding:0 24px;font-weight:500;}
+
+/* ══ LAYOUT ══ */
+.layout{display:grid;grid-template-columns:1fr 330px;padding-top:133px;min-height:100vh;}
+.main{padding:24px 32px 100px;border-right:1px solid var(--brd);min-width:0;overflow-x:clip;}
+.rail{padding:22px 16px 100px;background:var(--rail-bg);min-width:0;overflow-x:clip;}
+
+/* ══ CONTEXT BLOCK (replaces generic greeting) ══ */
+.ctx-block{background:linear-gradient(135deg,rgba(30,43,122,.6),rgba(59,40,200,.4));border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:20px 24px;margin-bottom:22px;position:relative;overflow:hidden;}
+.ctx-block::after{content:'';position:absolute;top:-30px;right:-30px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.04);pointer-events:none;}
+.ctx-time{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ticker);display:flex;align-items:center;gap:6px;margin-bottom:6px;}
+.ctx-time::before{content:'';width:12px;height:2px;background:var(--ticker);}
+.ctx-name{font-family:'Playfair Display',serif;font-size:30px;font-weight:900;line-height:1.1;margin-bottom:4px;}
+.ctx-name em{color:var(--orange);font-style:normal;}
+.ctx-role{font-size:12px;color:var(--tw6);margin-bottom:10px;}
+.ctx-signal{font-size:13px;color:rgba(255,255,255,.85);line-height:1.5;padding:10px 14px;background:rgba(255,255,255,.07);border-radius:10px;border-left:3px solid var(--ticker);}
+.ctx-signal strong{color:var(--ticker);}
+
+/* ══ HERO BRIEF ══ */
+.hero{background:linear-gradient(135deg,var(--hero-l),var(--hero-r));border-radius:18px;padding:22px;margin-bottom:20px;position:relative;overflow:hidden;}
+.hero::after{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.05);pointer-events:none;}
+.hero-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;position:relative;z-index:1;}
+.hero-lbl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.65);display:flex;align-items:center;gap:5px;margin-bottom:3px;}
+.hero-lbl::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--orange);animation:blink 2s infinite;}
+.hero-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:800;margin-bottom:3px;}
+.hero-dur{font-size:10px;color:rgba(255,255,255,.5);font-family:'DM Mono',monospace;}
+.pbt{width:48px;height:48px;border-radius:50%;background:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--hero-r);flex-shrink:0;transition:.2s;box-shadow:0 4px 16px rgba(0,0,0,.25);}
+.pbt:hover{transform:scale(1.08);}
+.wvf{display:flex;align-items:center;gap:2px;height:36px;margin-bottom:12px;position:relative;z-index:1;}
+.wb{border-radius:2px;width:4px;background:rgba(255,255,255,.2);}
+.wb.a{background:rgba(255,255,255,.7);}
+.wb.p{animation:waveAnim .7s ease-in-out infinite;}
+.buls{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;position:relative;z-index:1;}
+.bul{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:rgba(255,255,255,.82);line-height:1.4;}
+.buld{width:4px;height:4px;border-radius:50%;background:var(--orange);flex-shrink:0;margin-top:5px;}
+.pgr{display:flex;align-items:center;gap:9px;position:relative;z-index:1;}
+.pg-bar{flex:1;height:3px;background:rgba(255,255,255,.18);border-radius:2px;overflow:hidden;cursor:pointer;}
+.pg-fill{height:100%;background:#fff;border-radius:2px;transition:width .1s;}
+.pg-t{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.5);}
+
+/* ══ FILTER TABS ══ */
+.ftabs{display:flex;gap:6px;margin-bottom:18px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;}
+.ftabs::-webkit-scrollbar{display:none;}
+.ft{position:relative;padding:6px 13px;border-radius:20px;font-size:12px;font-weight:500;border:1px solid var(--brd);background:transparent;color:var(--tw6);cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s;white-space:nowrap;flex-shrink:0;}
+.ft:hover{color:#fff;border-color:rgba(255,255,255,.22);}
+.ft.on{color:#fff;border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.1);}
+.ft-count{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.15);font-size:9px;font-weight:700;margin-left:5px;}
+.ft.on .ft-count{background:rgba(255,255,255,.25);}
+.ft-underline{position:absolute;bottom:-2px;left:13px;right:13px;height:2px;background:#fff;border-radius:2px;transform:scaleX(0);transition:transform .25s ease;}
+.ft.on .ft-underline{transform:scaleX(1);}
+/* associate filter banner */
+.assoc-banner{display:none;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.25);border-radius:10px;padding:8px 14px;margin-bottom:14px;font-size:12px;color:var(--orange);align-items:center;gap:8px;}
+.assoc-banner.show{display:flex;}
+
+/* ══ SECTION LABEL ══ */
+.slbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tw6);margin-bottom:11px;display:flex;align-items:center;gap:8px;}
+.slbl::after{content:'';flex:1;height:1px;background:var(--brd);}
+.slbl-persona{color:var(--ticker);font-size:9px;font-weight:600;letter-spacing:.08em;}
+
+/* ══ SH ══ */
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.sh-t{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;}
+.sh-l{font-size:11px;color:var(--tw6);cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif;transition:.15s;}
+.sh-l:hover{color:#fff;}
+
+/* ══ FEATURED STORY (cinematic) ══ */
+.feat{border-radius:16px;overflow:hidden;position:relative;margin-bottom:12px;cursor:pointer;height:320px;}
+.feat:hover .feat-img-inner{transform:scale(1.03);}
+.feat-img{position:absolute;inset:0;overflow:hidden;}
+.feat-img-inner{width:100%;height:100%;transition:transform .4s ease;background:linear-gradient(135deg,#0f2027,#1a2a4a,#203a43);display:flex;align-items:center;justify-content:center;}
+.cam-placeholder{display:flex;flex-direction:column;align-items:center;gap:8px;opacity:.2;}
+.cam-placeholder svg{width:48px;height:48px;fill:white;}
+.cam-placeholder span{font-size:11px;color:#fff;letter-spacing:.08em;text-transform:uppercase;}
+.feat-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(8,12,30,.97) 0%,rgba(8,12,30,.5) 50%,rgba(8,12,30,.1) 100%);}
+.feat-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.2);backdrop-filter:blur(8px);border:2px solid rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-size:20px;transition:.2s;}
+.feat:hover .feat-play{background:rgba(255,255,255,.3);}
+.feat-bm{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:8px;background:rgba(0,0,0,.4);backdrop-filter:blur(8px);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:.2s;z-index:2;}
+.feat-bm.saved{color:var(--orange);}
+.feat-source{position:absolute;top:14px;left:14px;z-index:2;}
+.feat-con{position:absolute;bottom:0;left:0;right:0;padding:22px;}
+.feat-tag{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;background:linear-gradient(90deg,var(--hero-l),var(--hero-r));font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;color:#fff;}
+.feat-h{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;line-height:1.15;margin-bottom:6px;}
+.feat-chosen{font-size:10px;color:rgba(255,255,255,.5);margin-bottom:8px;font-style:italic;}
+.feat-chosen span{color:var(--ticker);}
+/* TL;DR collapsible */
+.tldr{background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);border-radius:8px;padding:9px 12px;margin-bottom:10px;cursor:pointer;}
+.tldr-top{display:flex;align-items:center;gap:7px;font-size:10px;font-weight:700;color:var(--purple-l);text-transform:uppercase;letter-spacing:.06em;}
+.tldr-body{font-size:12px;color:rgba(255,255,255,.75);line-height:1.45;margin-top:6px;display:none;}
+.tldr.open .tldr-body{display:block;}
+.tldr-toggle{margin-left:auto;font-size:10px;color:var(--tw6);}
+.feat-ft{display:flex;align-items:center;justify-content:space-between;}
+.feat-st{display:flex;gap:10px;font-size:11px;color:var(--tw6);}
+.feat-bts{display:flex;gap:7px;}
+.bp{padding:7px 16px;border-radius:8px;background:#fff;color:var(--hero-r);border:none;cursor:pointer;font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif;transition:.15s;}
+.bp:hover{opacity:.9;}
+.bg2{padding:7px 16px;border-radius:8px;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.18);cursor:pointer;font-size:12px;font-weight:500;font-family:'DM Sans',sans-serif;}
+/* social proof */
+.social-proof{display:flex;align-items:center;gap:7px;margin-top:8px;}
+.avatar-stack{display:flex;}
+.avatar-stack .av-s{width:20px;height:20px;border-radius:50%;border:2px solid var(--navy);margin-left:-6px;font-size:8px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+.avatar-stack .av-s:first-child{margin-left:0;}
+.sp-txt{font-size:11px;color:var(--tw6);}
+
+/* ══ VOICES FROM MARS STRIP ══ */
+.voices-strip{margin-bottom:22px;}
+.voices-scroll{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.15) transparent;-webkit-overflow-scrolling:touch;}
+.voices-scroll::-webkit-scrollbar{height:3px;}
+.voices-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:2px;}
+.voice-card{flex-shrink:0;background:rgba(255,248,240,.06);border:1px solid rgba(245,166,35,.2);border-radius:14px;padding:16px;cursor:pointer;transition:.2s;position:relative;}
+.voice-card:hover{border-color:rgba(245,166,35,.4);transform:translateY(-2px);}
+.voice-card.featured{width:260px;}
+.voice-card.regular{width:195px;}
+.voice-assoc{display:flex;align-items:center;gap:9px;margin-bottom:10px;}
+.voice-photo{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#6366F1,#8B5CF6);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;position:relative;}
+.voice-photo::after{content:'';position:absolute;inset:-2px;border-radius:50%;border:2px solid var(--orange);opacity:.6;}
+.voice-name{font-size:12px;font-weight:600;}
+.voice-role{font-size:10px;color:var(--tw6);}
+.assoc-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:20px;background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.25);font-size:9px;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:.05em;position:absolute;top:12px;right:12px;}
+.voice-quote{font-size:12px;color:rgba(255,255,255,.8);line-height:1.45;font-style:italic;border-left:2px solid var(--orange);padding-left:9px;margin-bottom:10px;}
+.voice-title{font-size:12px;font-weight:600;line-height:1.35;margin-bottom:8px;}
+.voice-meta{display:flex;align-items:center;justify-content:space-between;}
+.voice-type{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--tw6);}
+.follow-btn{padding:3px 10px;border-radius:20px;border:1px solid rgba(255,255,255,.25);background:transparent;color:rgba(255,255,255,.7);font-size:10px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s;}
+.follow-btn:hover,.follow-btn.following{border-color:var(--ticker);color:var(--ticker);}
+.follow-btn.following::before{content:'✓ ';}
+.human-voice-lbl{font-size:9px;color:var(--dk3);display:flex;align-items:center;gap:4px;margin-top:6px;}
+
+/* ══ WHAT'S MOVING STRIP ══ */
+.strip-outer{overflow-x:auto;margin-bottom:26px;padding-bottom:8px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.15) transparent;-webkit-overflow-scrolling:touch;}
+.strip-outer::-webkit-scrollbar{height:3px;}
+.strip-outer::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:2px;}
+.strip{display:flex;gap:11px;width:max-content;padding-right:24px;}
+.mc{flex-shrink:0;width:178px;background:var(--card-dark);border:1px solid var(--brd);border-radius:13px;overflow:hidden;cursor:pointer;transition:.2s;position:relative;}
+.mc:hover{border-color:rgba(255,255,255,.22);transform:translateY(-2px);}
+.mc-img{height:100px;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.mc-img-inner{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.mc-img-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(8,12,30,.8),transparent);}
+.mc-img-tag{position:absolute;top:7px;left:7px;display:flex;align-items:center;gap:3px;}
+.mc-rel{position:absolute;top:7px;right:7px;padding:2px 7px;border-radius:20px;background:rgba(29,184,122,.2);border:1px solid rgba(29,184,122,.4);font-size:8px;font-weight:700;color:var(--ticker);text-transform:uppercase;letter-spacing:.05em;}
+.mc-body{padding:11px 12px;}
+.mc-ai{font-size:10px;color:var(--dk5);line-height:1.4;margin-bottom:6px;font-style:italic;}
+.mc-h{font-size:12px;font-weight:600;line-height:1.3;margin-bottom:6px;}
+.mc-m{font-size:10px;color:var(--tw6);display:flex;align-items:center;gap:5px;}
+.mc-bm{position:absolute;bottom:10px;right:10px;background:none;border:none;cursor:pointer;font-size:13px;color:var(--tw3);transition:.2s;}
+.mc-bm.saved{color:var(--orange);}
+.tg{display:inline-flex;padding:2px 7px;border-radius:5px;font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;}
+.ts{background:rgba(44,184,122,.12);color:var(--green);}
+.tl{background:rgba(124,58,237,.14);color:var(--purple-l);}
+.tf{background:rgba(74,108,247,.14);color:#6B8EFF;}
+.tp{background:rgba(236,72,153,.12);color:#F472B6;}
+.ti{background:rgba(245,166,35,.14);color:var(--orange);}
+.ta{background:rgba(245,166,35,.14);color:var(--orange);}/* associate */
+
+/* ══ VISUAL STORIES (portrait) ══ */
+.vstories{margin-bottom:26px;}
+.vs-scroll{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none;}
+.vs-scroll::-webkit-scrollbar{display:none;}
+.vs-card{flex-shrink:0;width:120px;height:185px;border-radius:14px;overflow:hidden;position:relative;cursor:pointer;transition:.2s;}
+.vs-card:hover{transform:scale(1.04);}
+.vs-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:32px;}
+.vs-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(8,12,30,.9) 0%,rgba(8,12,30,.1) 60%);}
+.vs-con{position:absolute;bottom:0;left:0;right:0;padding:10px;}
+.vs-assoc-av{width:24px;height:24px;border-radius:50%;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;margin-bottom:4px;}
+.vs-name{font-size:9px;font-weight:600;line-height:1.2;}
+.vs-type{font-size:8px;color:var(--tw6);}
+.vs-corp-icon{position:absolute;top:8px;right:8px;width:20px;height:20px;border-radius:50%;background:rgba(30,43,122,.8);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;}
+
+/* ══ JOURNEYS ══ */
+.jg{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:26px;}
+.jc{border-radius:15px;overflow:hidden;position:relative;height:220px;cursor:pointer;transition:.2s;}
+.jc:hover{transform:scale(1.025);}
+.jbg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:52px;}
+.jov{position:absolute;inset:0;background:linear-gradient(135deg,rgba(8,12,30,.85),rgba(8,12,30,.32));}
+.jco{position:absolute;inset:0;padding:15px;display:flex;flex-direction:column;justify-content:flex-end;}
+.jbadge2{display:inline-flex;padding:3px 9px;border-radius:20px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);width:fit-content;color:#fff;backdrop-filter:blur(6px);}
+.jnew{position:absolute;top:12px;right:12px;width:8px;height:8px;border-radius:50%;background:var(--orange);animation:livePulse 2s infinite;}
+.jt{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;line-height:1.2;margin-bottom:5px;}
+.jst{display:flex;gap:9px;font-size:10px;color:rgba(255,255,255,.58);}
+.jpb{position:absolute;bottom:0;left:0;height:3px;background:var(--orange);}
+
+/* ══ DIV ══ */
+.dv{height:1px;background:var(--brd);margin:20px 0;}
+
+/* ══ PRINCIPLES ══ */
+.pl{display:flex;flex-direction:column;gap:9px;margin-bottom:26px;}
+.pc{display:flex;align-items:center;gap:13px;background:var(--blue-deep);border:1px solid rgba(255,255,255,.1);border-radius:13px;padding:14px 16px;cursor:pointer;transition:.2s;position:relative;overflow:hidden;}
+.pc::after{content:'';position:absolute;right:-15px;bottom:-15px;width:70px;height:70px;border-radius:50%;background:rgba(255,255,255,.04);pointer-events:none;}
+.pc:hover{background:#142E90;}
+.pi{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.pn{font-size:13px;font-weight:600;margin-bottom:2px;}
+.pd{font-size:10px;color:rgba(255,255,255,.55);}
+.pr2{display:flex;flex-direction:column;align-items:flex-end;gap:2px;margin-left:auto;}
+.pc-cnt{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;line-height:1;}
+.pc-lbl{font-size:8px;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.06em;}
+.prec{font-size:10px;color:var(--orange);background:rgba(245,166,35,.14);border:none;border-radius:5px;padding:2px 8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;margin-top:2px;}
+
+/* ══ RAIL ══ */
+.rl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--dk5);margin-bottom:9px;display:flex;align-items:center;gap:7px;}
+.rl::after{content:'';flex:1;height:1px;background:rgba(0,0,0,.1);}
+.rs{margin-bottom:20px;}
+
+/* GROWTH */
+.gro{background:linear-gradient(135deg,var(--hero-l),var(--hero-r));border-radius:14px;padding:16px;position:relative;overflow:hidden;}
+.gro::after{content:'';position:absolute;top:-25px;right:-25px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.05);pointer-events:none;}
+.gro-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.gro-t{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;}
+.gro-tag{padding:3px 8px;border-radius:20px;background:var(--orange);font-size:9px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:.05em;}
+.gro-sub{font-size:10px;color:rgba(255,255,255,.6);margin-bottom:10px;}
+.gro-steps{display:flex;gap:3px;margin-bottom:8px;}
+.stp{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.stp-c{width:23px;height:23px;border-radius:50%;border:2px solid rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:rgba(255,255,255,.4);}
+.stp-c.dn{background:#fff;border-color:#fff;color:var(--hero-r);}
+.stp-c.ac{border-color:var(--orange);color:var(--orange);}
+.stp-l{font-size:7px;color:rgba(255,255,255,.4);text-align:center;line-height:1.2;}
+.stp-l.ac{color:rgba(255,255,255,.85);}
+.gro-bar{height:2px;background:rgba(255,255,255,.14);border-radius:2px;overflow:hidden;}
+.gro-fill{height:100%;width:16.6%;background:#fff;}
+.gro-meta{display:flex;justify-content:space-between;margin-top:5px;}
+.gro-meta span{font-size:9px;color:rgba(255,255,255,.55);}
+.gro-meta strong{color:var(--orange);}
+
+/* COMPANION */
+.comp{background:var(--rail-card);border:1px solid var(--brl);border-radius:14px;padding:15px;}
+.comp-h{display:flex;align-items:center;gap:9px;margin-bottom:12px;}
+.orb{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--hero-l),var(--purple));display:flex;align-items:center;justify-content:center;font-size:13px;position:relative;flex-shrink:0;}
+.orb::after{content:'';position:absolute;inset:-2px;border-radius:50%;border:1.5px solid var(--purple-l);opacity:.35;animation:spin 4s linear infinite;}
+.comp-title{font-size:13px;font-weight:700;color:var(--purple);}
+.comp-sub{font-size:10px;color:var(--dk5);}
+.comp-morning{background:linear-gradient(135deg,rgba(30,43,122,.08),rgba(59,40,200,.06));border:1px solid rgba(30,43,122,.12);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:11px;color:var(--dk);line-height:1.5;}
+.comp-morning strong{color:var(--hero-l);}
+.csect{font-size:9px;font-weight:700;color:var(--dk5);text-transform:uppercase;letter-spacing:.08em;margin:11px 0 7px;display:flex;align-items:center;gap:5px;}
+.rc{background:var(--rail-card);border:1px solid var(--brl);border-radius:11px;padding:11px;margin-bottom:6px;}
+.rc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;}
+.rc-title{font-size:11px;font-weight:600;color:var(--dk);}
+.rc-sub{font-size:10px;color:var(--dk5);line-height:1.35;}
+.rc-cta{font-size:10px;font-weight:600;color:var(--purple);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:4px;display:flex;align-items:center;gap:3px;transition:gap .15s;}
+.rc-cta:hover{gap:6px;}
+.pill{padding:2px 7px;border-radius:20px;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;}
+.pg{background:rgba(44,184,122,.1);color:var(--green);}
+.po{background:rgba(245,166,35,.1);color:var(--orange);}
+.pr-pill{background:rgba(232,69,60,.1);color:var(--red);}
+.pp{background:rgba(139,92,246,.1);color:#8B5CF6;}
+.ask{display:flex;align-items:center;gap:7px;background:#F7F7FF;border:1px solid rgba(0,0,0,.08);border-radius:9px;padding:8px 11px;margin-top:10px;}
+.ask input{flex:1;background:none;border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:11px;color:var(--dk);}
+.ask input::placeholder{color:var(--dk5);}
+.ask-s{width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,var(--hero-l),var(--hero-r));border:none;cursor:pointer;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;}
+.ask-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+.chip{padding:4px 9px;border-radius:20px;background:#F0F0FA;border:1px solid rgba(0,0,0,.08);font-size:10px;color:var(--dk);cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s;}
+.chip:hover{background:#E8E8FF;border-color:var(--purple);color:var(--purple);}
+
+/* TOP VOICES */
+.top-voices{background:var(--rail-card);border:1px solid var(--brl);border-radius:11px;padding:12px;margin-bottom:8px;}
+.tv-title{font-size:11px;font-weight:700;color:var(--dk);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.tv-title::before{content:'🏆';font-size:12px;}
+.tv-row{display:flex;align-items:center;gap:9px;padding:6px 0;border-bottom:1px solid var(--brl);}
+.tv-row:last-child{border-bottom:none;padding-bottom:0;}
+.tv-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;color:#fff;}
+.tv-info{flex:1;}
+.tv-name{font-size:11px;font-weight:600;color:var(--dk);}
+.tv-role{font-size:9px;color:var(--dk5);}
+.tv-eng{font-size:10px;font-weight:700;color:var(--orange);}
+
+/* MEDIA */
+.med{background:var(--rail-card);border:1px solid var(--brl);border-radius:12px;overflow:hidden;margin-bottom:7px;cursor:pointer;transition:.2s;}
+.med:hover{box-shadow:0 3px 12px rgba(0,0,0,.08);}
+.med-th{height:100px;display:flex;align-items:center;justify-content:center;font-size:28px;position:relative;}
+.med-th.hero-media{height:140px;}
+.med-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(8,12,30,.55),transparent);}
+.med-tl2{position:absolute;top:6px;left:6px;}
+.med-br{position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,.65);border-radius:3px;padding:2px 5px;font-size:9px;font-family:'DM Mono',monospace;color:#fff;}
+.med-in{padding:10px 12px;}
+.med-t{font-size:11px;font-weight:600;line-height:1.3;margin-bottom:4px;color:var(--dk);}
+.med-s{font-size:10px;color:var(--dk5);display:flex;gap:8px;}
+.med-viewers{font-size:10px;color:var(--green);font-weight:600;}
+.lb{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:20px;background:rgba(232,69,60,.15);border:1px solid rgba(232,69,60,.3);font-size:8px;font-weight:700;text-transform:uppercase;color:var(--red);}
+.ld{width:5px;height:5px;border-radius:50%;background:var(--red);animation:livePulse 1s infinite;}
+
+/* LEADERS */
+.lc{background:var(--rail-card);border:1px solid var(--brl);border-left:3px solid var(--hero-r);border-radius:12px;padding:12px;margin-bottom:7px;cursor:pointer;transition:.2s;}
+.lc:hover{box-shadow:0 3px 12px rgba(0,0,0,.08);}
+.lt{display:flex;align-items:center;gap:9px;margin-bottom:8px;}
+.lphoto{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#E5E7EB,#D1D5DB);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;border:2px solid rgba(0,0,0,.08);}
+.lphoto svg{width:22px;height:22px;fill:#9CA3AF;}
+.lname{font-size:12px;font-weight:600;color:var(--dk);}
+.lrole{font-size:9px;color:var(--dk5);}
+.vn{display:flex;align-items:center;gap:7px;background:#F7F7FF;border-radius:7px;padding:6px 9px;}
+.vplay{width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,var(--hero-l),var(--hero-r));border:none;cursor:pointer;color:#fff;font-size:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.vwave{display:flex;align-items:center;gap:2px;flex:1;}
+.vwb{width:3px;border-radius:2px;background:rgba(0,0,0,.13);}
+.vdur{font-size:9px;color:var(--dk5);font-family:'DM Mono',monospace;}
+.lq{font-size:10px;color:var(--dk5);font-style:italic;line-height:1.4;margin-top:7px;border-left:2px solid var(--hero-r);padding-left:7px;}
+
+/* COMMUNITY */
+.post{border:1px solid var(--brl);border-radius:12px;padding:12px;margin-bottom:7px;}
+.post.assoc-post{background:var(--assoc-card);}
+.post.corp-post{background:var(--rail-card);}
+.ph{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.pav{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;color:#fff;}
+.pnm{font-size:11px;font-weight:600;color:var(--dk);}
+.pro{font-size:9px;color:var(--dk5);}
+.pbg{padding:2px 7px;border-radius:20px;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-left:auto;}
+.bm2{background:rgba(124,58,237,.1);color:var(--purple);}
+.bq2{background:rgba(74,108,247,.1);color:#4A6CF7;}
+.ptxt{font-size:11px;color:#374151;line-height:1.5;margin-bottom:8px;}
+.react-bar{display:flex;gap:4px;margin-bottom:7px;flex-wrap:wrap;}
+.react-opt{padding:3px 8px;border-radius:20px;background:#F0F0FA;border:1px solid rgba(0,0,0,.08);font-size:10px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s;white-space:nowrap;}
+.react-opt:hover,.react-opt.reacted{background:rgba(30,43,122,.08);border-color:var(--hero-l);color:var(--hero-l);}
+.pact{display:flex;align-items:center;gap:8px;}
+.pa{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--dk5);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.corp-source{display:inline-flex;align-items:center;gap:4px;font-size:9px;color:var(--dk5);padding:2px 7px;background:rgba(30,43,122,.06);border-radius:20px;margin-left:auto;}
+
+/* COMM TABS */
+.ctabs{display:flex;gap:5px;margin-bottom:9px;flex-wrap:wrap;}
+.ct{padding:4px 10px;border-radius:20px;font-size:10px;font-weight:500;border:1px solid rgba(0,0,0,.1);background:transparent;color:var(--dk5);cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s;}
+.ct:hover{color:var(--dk);}
+.ct.on{background:linear-gradient(90deg,var(--hero-l),var(--hero-r));color:#fff;border-color:transparent;}
+.recog{width:100%;padding:9px;border-radius:9px;background:transparent;border:1px dashed rgba(0,0,0,.14);color:var(--dk5);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:11px;transition:.15s;margin-top:8px;}
+.recog:hover{border-color:var(--purple);color:var(--purple);}
+
+/* SOURCE BADGES */
+.src-official{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;background:rgba(30,43,122,.15);border:1px solid rgba(30,43,122,.25);font-size:8px;font-weight:700;color:#6B8EFF;text-transform:uppercase;letter-spacing:.05em;}
+.src-assoc{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.25);font-size:8px;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:.05em;}
+
+/* STICKY NEXT BAR */
+.next-bar{position:fixed;bottom:0;left:0;right:330px;height:50px;background:rgba(8,12,30,.96);backdrop-filter:blur(16px);border-top:1px solid var(--brd);display:flex;align-items:center;padding:0 24px;gap:12px;z-index:200;transform:translateY(0);transition:transform .3s;}
+.next-bar-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--tw3);flex-shrink:0;}
+.next-bar-title{font-size:13px;font-weight:600;color:rgba(255,255,255,.85);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.next-bar-assoc{font-size:10px;color:var(--orange);margin-right:4px;}
+.next-bar-btn{padding:6px 16px;border-radius:8px;background:linear-gradient(90deg,var(--hero-l),var(--hero-r));border:none;color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;flex-shrink:0;}
+</style>
+</head>
+<body>
+
+<!-- READING PROGRESS -->
+<div id="read-progress"></div>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="logo">
+    <div class="logo-m">M</div>
+    <div><span class="logo-t">My MARS</span><span class="logo-s">Companion</span></div>
+  </div>
+  <div class="srch">
+    <span style="color:var(--tw3);font-size:13px">✦</span>
+    <input placeholder="Ask AI or search Mars…"/>
+  </div>
+  <div class="ai-mode-toggle" id="aiToggle" onclick="toggleAI()">
+    <div class="ai-toggle-dot"></div>
+    <span>AI Mode</span>
+  </div>
+  <div class="nav-r">
+    <a>Favorites</a>
+    <a style="position:relative">Tasks<span style="position:absolute;top:-5px;right:-10px;width:13px;height:13px;background:var(--red);border-radius:50%;font-size:7px;display:inline-flex;align-items:center;justify-content:center;font-weight:700">4</span></a>
+    <a>Tickets</a>
+    <div class="ibt">🔔<div class="nbadge">4</div></div>
+    <div class="av" style="background:linear-gradient(135deg,#0EA5E9,#6366F1)">P</div>
+  </div>
+</nav>
+
+<!-- NAV2 -->
+<div class="nav2">
+  <button class="n2 on">News and Media ▾</button>
+  <button class="n2">P&O ▾</button>
+  <button class="n2">Business Services ▾</button>
+  <button class="n2">About Mars ▾</button>
+  <div class="n2-r"><span>Tools</span><span>Knowledge &amp; Policies ▾</span><span>Requests ▾</span></div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="tk-lbl">📢 Latest Updates</div>
+  <div class="tk-wrap">
+    <div class="tk-track">
+      <span class="tk-i">📦 Kellanova integration Phase 1 complete — 85% of Supply Chain associates onboarded globally</span>
+      <span class="tk-i" style="opacity:.5">·</span>
+      <span class="tk-i">🌱 European Automation Update: impacts Q2 Supply Chain deliverables — review required</span>
+      <span class="tk-i" style="opacity:.5">·</span>
+      <span class="tk-i">🎉 New parental leave benefits effective April 1 — applies to all Mars Wrigley segments</span>
+      <span class="tk-i" style="opacity:.5">·</span>
+      <span class="tk-i">🏆 International Women's Day celebrations underway — join your local Mars Wrigley event</span>
+      <span class="tk-i" style="opacity:.5">·</span>
+      <span class="tk-i">📦 Kellanova integration Phase 1 complete — 85% of Supply Chain associates onboarded globally</span>
+      <span class="tk-i" style="opacity:.5">·</span>
+      <span class="tk-i">🌱 European Automation Update: impacts Q2 Supply Chain deliverables — review required</span>
+      <span class="tk-i" style="opacity:.5">·</span>
+      <span class="tk-i">🎉 New parental leave benefits effective April 1 — applies to all Mars Wrigley segments</span>
+      <span class="tk-i" style="opacity:.5">·</span>
+      <span class="tk-i">🏆 International Women's Day celebrations underway — join your local Mars Wrigley event</span>
+    </div>
+  </div>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout">
+<main class="main">
+
+  <!-- CONTEXT BLOCK -->
+  <div class="ctx-block fu d1">
+    <div class="ctx-time">Good morning · Monday, April 23 · Mumbai, 9:04am</div>
+    <h1 class="ctx-name">Good morning, <em>Priya.</em></h1>
+    <div class="ctx-role">Supply Chain Lead · Mars Wrigley · Mumbai</div>
+    <div class="ctx-signal">
+      <strong>Your world this week:</strong> The Kellanova integration is top of mind across Supply Chain globally — your peers in Warsaw and Singapore are tracking automation updates. Sustainable packaging is trending in your segment.
+    </div>
+  </div>
+
+  <!-- AUDIO BRIEF -->
+  <div class="hero fu d2">
+    <div class="hero-top">
+      <div>
+        <div class="hero-lbl">Your Daily Brief · AI-Generated</div>
+        <div class="hero-title">This Week at Mars — Supply Chain Edition</div>
+        <div class="hero-dur">3 min 45 sec · Tailored for Supply Chain · Mumbai · Updated now</div>
+      </div>
+      <button class="pbt" id="pbt" onclick="togglePlay()">▶</button>
+    </div>
+    <div class="wvf" id="wvf"></div>
+    <div class="buls">
+      <div class="bul"><div class="buld"></div>Kellanova integration ahead of schedule — Phase 2 cultural onboarding begins this week across your region</div>
+      <div class="bul"><div class="buld"></div>European Automation Update directly impacts your Q2 Supply Chain deliverables — action required</div>
+      <div class="bul"><div class="buld"></div>Sustainable packaging milestone: 100% recyclable across 12 Wrigley product lines in EU markets</div>
+    </div>
+    <div class="pgr">
+      <span class="pg-t" id="el">1:24</span>
+      <div class="pg-bar" onclick="seekBrief(event,this)"><div class="pg-fill" id="pgf" style="width:37%"></div></div>
+      <span class="pg-t">3:45</span>
+    </div>
+  </div>
+
+  <!-- FILTER TABS -->
+  <div class="ftabs fu d2">
+    <button class="ft on" onclick="setTab(this,'all')">All<span class="ft-count">48</span><div class="ft-underline"></div></button>
+    <button class="ft" onclick="setTab(this,'articles')">📄 Articles<span class="ft-count">19</span><div class="ft-underline"></div></button>
+    <button class="ft" onclick="setTab(this,'videos')">▶ Videos<span class="ft-count">11</span><div class="ft-underline"></div></button>
+    <button class="ft" onclick="setTab(this,'podcasts')">🎙 Podcasts<span class="ft-count">6</span><div class="ft-underline"></div></button>
+    <button class="ft" onclick="setTab(this,'voices')">👤 Associate Voices<span class="ft-count">8</span><div class="ft-underline"></div></button>
+    <button class="ft" onclick="setTab(this,'official')">🏢 Mars Official<span class="ft-count">12</span><div class="ft-underline"></div></button>
+  </div>
+  <div class="assoc-banner" id="assocBanner">
+    👤 Showing content created by your fellow Mars associates — human voices, unfiltered
+  </div>
+
+  <!-- FEATURED STORY -->
+  <div class="slbl fu d3">Today's Lead Story <span class="slbl-persona">· Chosen for Supply Chain, Mumbai</span></div>
+  <div class="feat fu d3" onclick="openStory()">
+    <div class="feat-img">
+      <div class="feat-img-inner" style="background:linear-gradient(135deg,#0f2027,#1a2a4a,#203a43);">
+        <div class="cam-placeholder">
+          <svg viewBox="0 0 24 24"><path d="M12 15.5a3.5 3.5 0 110-7 3.5 3.5 0 010 7zM20.5 7H17l-1.5-2h-7L7 7H3.5A1.5 1.5 0 002 8.5v10A1.5 1.5 0 003.5 20h17a1.5 1.5 0 001.5-1.5v-10A1.5 1.5 0 0020.5 7z"/></svg>
+          <span>Photography</span>
+        </div>
+      </div>
+    </div>
+    <div class="feat-overlay"></div>
+    <div class="feat-play">▶</div>
+    <div class="feat-source"><div class="src-official">🏢 Mars Official</div></div>
+    <button class="feat-bm" id="featBm" onclick="event.stopPropagation();toggleBm('featBm')">🔖</button>
+    <div class="feat-con">
+      <div class="feat-tag">🌱 Sustainability · Supply Chain</div>
+      <h2 class="feat-h">Net-Zero by 2050: How the Kellanova Integration is Reshaping Our Global Supply Chain</h2>
+      <div class="feat-chosen">Chosen for you because: <span>Supply Chain Lead · Trending with your peers in Warsaw & Singapore</span></div>
+      <div class="tldr" id="tldr" onclick="event.stopPropagation();toggleTldr()">
+        <div class="tldr-top">
+          <span>TL;DR</span>
+          <span class="tldr-toggle" id="tldrToggle">▾ expand</span>
+        </div>
+        <div class="tldr-body" id="tldrBody">Mars commits to a full supply chain overhaul tied to net-zero targets. The Kellanova acquisition creates new leverage for sustainable logistics across 6 APAC markets, with Phase 2 packaging changes affecting Wrigley lines from Q3 2026.</div>
+      </div>
+      <div class="feat-ft">
+        <div class="feat-st"><span>👁 2.3K</span><span>💬 45</span><span>⏱ 15 min</span></div>
+        <div class="feat-bts"><button class="bg2" onclick="event.stopPropagation()">Save</button><button class="bp" onclick="event.stopPropagation()">Read Now →</button></div>
+      </div>
+      <div class="social-proof">
+        <div class="avatar-stack">
+          <div class="av-s" style="background:#6366F1">A</div>
+          <div class="av-s" style="background:#0EA5E9">R</div>
+          <div class="av-s" style="background:#10B981">M</div>
+        </div>
+        <span class="sp-txt">Anika, Raj and 31 others in Supply Chain read this today</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- VOICES FROM MARS -->
+  <div class="voices-strip fu d3">
+    <div class="sh">
+      <span class="sh-t">Voices from Mars</span>
+      <button class="sh-l">All associate voices →</button>
+    </div>
+    <div style="font-size:11px;color:var(--tw6);margin-bottom:12px;">Associates sharing what matters to them · unfiltered, unedited</div>
+    <div class="voices-scroll" id="voicesScroll"></div>
+  </div>
+
+  <!-- WHAT'S MOVING -->
+  <div class="fu d4">
+    <div class="sh">
+      <span class="sh-t">What's Moving</span>
+      <button class="sh-l">View all →</button>
+    </div>
+    <div style="font-size:11px;color:var(--ticker);margin-bottom:10px;display:flex;align-items:center;gap:5px;">
+      <span>↑</span> Ordered by relevance to Supply Chain, Mumbai · then global trending
+    </div>
+    <div class="strip-outer">
+      <div class="strip" id="strip"></div>
+    </div>
+  </div>
+
+  <!-- VISUAL STORIES -->
+  <div class="vstories fu d4">
+    <div class="sh"><span class="sh-t">Visual Stories</span><button class="sh-l">See all →</button></div>
+    <div class="vs-scroll" id="vsScroll"></div>
+  </div>
+
+  <!-- TOPIC JOURNEYS -->
+  <div class="fu d4">
+    <div class="sh"><span class="sh-t">Topic Journeys</span><button class="sh-l">All journeys →</button></div>
+    <div class="jg" id="jg"></div>
+  </div>
+
+  <div class="dv"></div>
+
+  <!-- PRINCIPLES -->
+  <div class="fu d5">
+    <div class="sh"><span class="sh-t">Principles in Action</span><button class="sh-l" onclick="toast('Recognize a colleague 🎉')">Recognize someone →</button></div>
+    <div class="pl" id="pl"></div>
+  </div>
+
+</main>
+
+<!-- RAIL -->
+<aside class="rail">
+
+  <!-- GROWTH -->
+  <div class="rs fu d2">
+    <div class="rl">Your Growth Journey</div>
+    <div class="gro">
+      <div class="gro-top"><div class="gro-t">Growing With Mars</div><div class="gro-tag">⭐ Promo Path</div></div>
+      <div class="gro-sub">First 90 Days · Supply Chain Lead track</div>
+      <div class="gro-steps" id="steps"></div>
+      <div class="gro-bar"><div class="gro-fill"></div></div>
+      <div class="gro-meta"><span>✅ <strong>1 of 6</strong> achieved</span><span>📅 90 days left</span></div>
+    </div>
+  </div>
+
+  <!-- COMPANION -->
+  <div class="rs fu d2">
+    <div class="rl">Your Digital Companion</div>
+    <div class="comp">
+      <div class="comp-h">
+        <div class="orb">✦</div>
+        <div><div class="comp-title">Your Digital Companion</div><div class="comp-sub">Good morning, Priya · here's your day</div></div>
+      </div>
+      <div class="comp-morning">
+        ☀️ <strong>Morning mode:</strong> Your brief is ready, one action needs you today, and Anika Sharma — someone you follow — just published a new piece on sustainable logistics.
+      </div>
+      <div class="csect"><span>✦</span> Action Needed</div>
+      <div class="rc">
+        <div class="rc-top"><div class="rc-title">European Automation Update</div><span class="pill pr-pill">Critical</span></div>
+        <div class="rc-sub">Project accelerated — impacts your Q2 Supply Chain deliverables</div>
+        <button class="rc-cta" style="color:var(--red)">View timeline →</button>
+      </div>
+      <div class="csect"><span>✦</span> Connection</div>
+      <div class="rc">
+        <div class="rc-top"><div class="rc-title">Coffee Roulette</div><span class="pill pg">Match Available</span></div>
+        <div class="rc-sub">Connect with Sanjay Mehta · Operations, Warsaw — shared interest in packaging</div>
+        <button class="rc-cta">View match →</button>
+      </div>
+      <div class="csect"><span>✦</span> Associate Voice · People you follow</div>
+      <div class="rc" style="background:rgba(255,248,240,.6);border-color:rgba(245,166,35,.2);">
+        <div class="rc-top"><div class="rc-title">Anika Sharma</div><span class="pill" style="background:rgba(245,166,35,.1);color:var(--orange)">New post</span></div>
+        <div class="rc-sub">Sustainable Logistics in SE Asia: What's actually working · 4 min read</div>
+        <button class="rc-cta" style="color:var(--orange)">Read now →</button>
+      </div>
+      <div class="csect"><span>✦</span> Culture</div>
+      <div class="rc">
+        <div class="rc-top"><div class="rc-title">Mutuality in Action</div><span class="pill pp">Spotlight</span></div>
+        <div class="rc-sub">Your Mumbai team's collaboration recognised this week</div>
+        <button class="rc-cta">View highlights →</button>
+      </div>
+      <div class="ask">
+        <span style="font-size:11px;color:var(--dk5)">✦</span>
+        <input placeholder="Ask me anything about Mars…" id="ai-inp" onkeydown="if(event.key==='Enter')doAsk()"/>
+        <button class="ask-s" onclick="doAsk()">→</button>
+      </div>
+      <div class="ask-chips">
+        <button class="chip" onclick="doChip(this)">What's new in Supply Chain?</button>
+        <button class="chip" onclick="doChip(this)">Catch me up on Kellanova</button>
+        <button class="chip" onclick="doChip(this)">What should I read today?</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP VOICES -->
+  <div class="rs fu d3">
+    <div class="rl">Top Voices This Week</div>
+    <div class="top-voices">
+      <div class="tv-title">Most read associate voices this week</div>
+      <div id="topVoices"></div>
+    </div>
+  </div>
+
+  <!-- MEDIA ROOM -->
+  <div class="rs fu d3">
+    <div class="rl">Mars Media Room</div>
+    <div class="med" style="cursor:pointer">
+      <div class="med-th hero-media" style="background:linear-gradient(135deg,#0f2027,#203a43)">
+        <div class="cam-placeholder" style="opacity:.25"><svg viewBox="0 0 24 24" style="width:32px;height:32px;fill:white"><path d="M12 15.5a3.5 3.5 0 110-7 3.5 3.5 0 010 7zM20.5 7H17l-1.5-2h-7L7 7H3.5A1.5 1.5 0 002 8.5v10A1.5 1.5 0 003.5 20h17a1.5 1.5 0 001.5-1.5v-10A1.5 1.5 0 0020.5 7z"/></svg></div>
+        <div class="med-ov"></div>
+        <div class="med-tl2"><div class="lb"><div class="ld"></div>Live</div></div>
+      </div>
+      <div class="med-in">
+        <div class="med-t">Tomorrow Starts Today: Our 2026 Sustainability Vision</div>
+        <div class="med-s"><span>▶ Live now</span><span class="med-viewers">2,341 watching</span></div>
+      </div>
+    </div>
+    <div class="med">
+      <div class="med-th" style="background:linear-gradient(135deg,#1a1a2e,#16213e)">
+        <div class="cam-placeholder" style="opacity:.2"><svg viewBox="0 0 24 24" style="width:28px;height:28px;fill:white"><path d="M12 15.5a3.5 3.5 0 110-7 3.5 3.5 0 010 7zM20.5 7H17l-1.5-2h-7L7 7H3.5A1.5 1.5 0 002 8.5v10A1.5 1.5 0 003.5 20h17a1.5 1.5 0 001.5-1.5v-10A1.5 1.5 0 0020.5 7z"/></svg></div>
+        <div class="med-ov"></div><div class="med-br">8:30</div>
+      </div>
+      <div class="med-in"><div class="med-t">Kellanova Integration: Supply Chain Leaders Reflect</div><div class="med-s"><span>▶ Video</span><span>5.2K views</span></div></div>
+    </div>
+    <div class="med">
+      <div class="med-th" style="background:linear-gradient(135deg,#1a0533,#2d1b69)">
+        <div class="cam-placeholder" style="opacity:.2"><svg viewBox="0 0 24 24" style="width:28px;height:28px;fill:white"><path d="M12 15.5a3.5 3.5 0 110-7 3.5 3.5 0 010 7zM20.5 7H17l-1.5-2h-7L7 7H3.5A1.5 1.5 0 002 8.5v10A1.5 1.5 0 003.5 20h17a1.5 1.5 0 001.5-1.5v-10A1.5 1.5 0 0020.5 7z"/></svg></div>
+        <div class="med-ov"></div><div class="med-br">12:15</div>
+      </div>
+      <div class="med-in"><div class="med-t">People First: Building Our Culture at Scale</div><div class="med-s"><span>▶ Video</span><span>8.1K views</span></div></div>
+    </div>
+  </div>
+
+  <!-- LEADERSHIP -->
+  <div class="rs fu d4">
+    <div class="rl">Leadership Perspectives</div>
+    <div id="leaders"></div>
+  </div>
+
+  <!-- COMMUNITY -->
+  <div class="rs fu d5">
+    <div class="rl">Community Pulse</div>
+    <div class="ctabs">
+      <button class="ct on" onclick="setCTab(this)">Recognition</button>
+      <button class="ct" onclick="setCTab(this)">Voices</button>
+      <button class="ct" onclick="setCTab(this)">Spotlights</button>
+    </div>
+    <div id="comm"></div>
+    <button class="recog" onclick="toast('Share or recognize a colleague 🎉')">+ Share or Recognize a Colleague</button>
+  </div>
+
+</aside>
+</div>
+
+<!-- STICKY NEXT BAR -->
+<div class="next-bar" id="nextBar">
+  <span class="next-bar-label">Next →</span>
+  <span class="next-bar-title"><span class="next-bar-assoc" id="nextAssoc"></span><span id="nextTitle">Anika Sharma: Sustainable Logistics in SE Asia — what's actually working on the ground</span></span>
+  <button class="next-bar-btn" onclick="nextStory()">Read Next →</button>
+</div>
+
+<script>
+// ── DATA ──
+const voiceCards=[
+  {name:"Anika Sharma",role:"Sustainability Lead",loc:"Singapore",bg:"#10B981",initials:"AS",quote:"The real barrier to sustainable logistics isn't cost — it's the assumption that it is.",title:"Sustainable Logistics in SE Asia: What's Actually Working",type:"Article · 4 min",featured:true,following:true},
+  {name:"Raj Patel",role:"Operations Manager",loc:"Warsaw",bg:"#6366F1",initials:"RP",title:"Kellanova Week 1: An honest reflection from the floor",type:"Video · 6 min",featured:false,following:true},
+  {name:"Mei Lin",role:"Brand Manager",loc:"Shanghai",bg:"#F59E0B",initials:"ML",title:"How our Shanghai team cut packaging waste by 22%",type:"Article · 3 min",featured:false,following:false},
+  {name:"Kofi Asante",role:"R&D Scientist",loc:"Tema",bg:"#EF4444",initials:"KA",title:"Pet nutrition innovation: what the lab doesn't tell you",type:"Podcast · 8 min",featured:false,following:false},
+];
+const stories=[
+  {tag:"Supply Chain",cls:"ts",rel:true,corp:false,bg:"linear-gradient(135deg,#0f2027,#203a43)",h:"Kellanova integration: honest reflections from Supply Chain leaders on the ground",t:"2h ago",ai:"Phase 1 complete, trust-building is the real Q2 priority.",assoc:"Raj Patel · Warsaw"},
+  {tag:"Sustainability",cls:"ts",rel:true,corp:true,bg:"linear-gradient(135deg,#134e5e,#1a3a1a)",h:"European packaging targets: 100% recyclable across Wrigley lines by Q3",t:"3h ago",ai:"Directly affects your segment's Q3 supplier briefs.",assoc:null},
+  {tag:"Leadership",cls:"tl",rel:false,corp:true,bg:"linear-gradient(135deg,#1E2B7A,#3B28C8)",h:"CEO shares FY26 strategic priorities at global all-hands",t:"4h ago",ai:"Net-zero and Kellanova anchor the five strategic bets.",assoc:null},
+  {tag:"Innovation",cls:"ti",rel:false,corp:false,bg:"linear-gradient(135deg,#1a0533,#2d1b69)",h:"Pet nutrition breakthrough: new senior formula from Waltham lab",t:"6h ago",ai:"Cross-segment win — Petcare R&D sharing methods with Wrigley.",assoc:"Kofi Asante · Tema"},
+  {tag:"People",cls:"tp",rel:false,corp:true,bg:"linear-gradient(135deg,#2d1b69,#4c1d95)",h:"Enhanced parental leave launches globally April 1",t:"8h ago",ai:"Full policy detail in the P&O hub — check your eligibility.",assoc:null},
+  {tag:"Associate",cls:"ta",rel:false,corp:false,bg:"linear-gradient(135deg,#78350f,#92400e)",h:"How our Shanghai team cut packaging waste by 22% with no budget increase",t:"1d ago",ai:null,assoc:"Mei Lin · Shanghai"},
+];
+const vstories=[
+  {bg:"linear-gradient(135deg,#1a2a4a,#203a43)",corp:true,name:"Mars Official",label:"Campaign",icon:"🎬"},
+  {bg:"linear-gradient(135deg,#065f46,#047857)",corp:false,name:"Anika S.",label:"Sustainability",icon:"🌿",av:"AS",avBg:"#10B981"},
+  {bg:"linear-gradient(135deg,#1e1b4b,#312e81)",corp:true,name:"Mars Media",label:"Leadership",icon:"🎥"},
+  {bg:"linear-gradient(135deg,#7f1d1d,#991b1b)",corp:false,name:"Raj P.",label:"Ops Story",icon:"📦",av:"RP",avBg:"#6366F1"},
+  {bg:"linear-gradient(135deg,#134e5e,#1a3a1a)",corp:false,name:"Mei L.",label:"Innovation",icon:"♻️",av:"ML",avBg:"#F59E0B"},
+  {bg:"linear-gradient(135deg,#1E2B7A,#3B28C8)",corp:true,name:"Mars Wrigley",label:"Culture",icon:"🏆"},
+];
+const journeys=[
+  {badge:"📦 Integration",title:"Kellanova Integration",s:"15,217 · 203",p:"45%",bg:"linear-gradient(135deg,#0f2027,#203a43)",e:"🤝",isNew:true},
+  {badge:"♻️ Sustainability",title:"Sustainable Packaging Transition",s:"8,934 · 62",p:"68%",bg:"linear-gradient(135deg,#134e5e,#1a3a1a)",e:"🌿",isNew:false},
+  {badge:"🔥 Trending",title:"Mars at the Super Bowl",s:"18,234 · 147",p:"30%",bg:"linear-gradient(135deg,#1a1a2e,#16213e)",e:"🏈",isNew:false},
+  {badge:"🧬 Innovation",title:"Petcare Innovation Lab",s:"12,489 · 98",p:"20%",bg:"linear-gradient(135deg,#1a0533,#2d1b69)",e:"🐾",isNew:true},
+];
+const principles=[
+  {i:"🏆",n:"Quality",d:"The consumer is our boss",c:847},
+  {i:"💚",n:"Responsibility",d:"Total responsibility, always",c:623},
+  {i:"🤝",n:"Mutuality",d:"A shared benefit endures",c:912},
+  {i:"⚡",n:"Efficiency",d:"Waste nothing, do our best",c:534},
+  {i:"🚀",n:"Freedom",d:"Freedom to innovate and grow",c:701},
+];
+const leaders=[
+  {initials:"FM",name:"Frank Mars",role:"Founder, Mars Family",bg:"#C8102E",q:"Our principles are not just words — they are the path we walk every day."},
+  {initials:"VM",name:"Victoria Mars",role:"Board Member, Mars Family",bg:"#8B5CF6",q:"The future belongs to those who build it with purpose."},
+  {initials:"PW",name:"Poul Weihrauch",role:"CEO, Mars Inc.",bg:"#3B82F6",q:"We are accelerating our ambition for a better tomorrow."},
+];
+const posts=[
+  {i:"MJ",n:"Maria Johnson",r:"Supply Chain Manager · Warsaw",bg:"#6366F1",b:"Mutuality",bc:"bm2",t:"Went above and beyond to help our European team navigate the Kellanova integration. Her calm under pressure is exactly what Mutuality looks like.",l:47,a:"2h ago",isAssoc:true},
+  {i:"DK",n:"David Kim",r:"Senior Product Developer · Seoul",bg:"#0EA5E9",b:"Quality",bc:"bq2",t:"Led the breakthrough on sustainable packaging that reduced our carbon footprint by 15% without compromising product quality. Real impact.",l:92,a:"5h ago",isAssoc:true},
+];
+const topVoices=[
+  {initials:"AS",name:"Anika Sharma",role:"Sustainability · Singapore",bg:"#10B981",eng:"4.2K"},
+  {initials:"RP",name:"Raj Patel",role:"Operations · Warsaw",bg:"#6366F1",eng:"3.1K"},
+  {initials:"ML",name:"Mei Lin",role:"Brand · Shanghai",bg:"#F59E0B",eng:"2.8K"},
+];
+const stepsData=[
+  {l:"Watch\nAll-Hands",d:true},{l:"Read\nPrinciples",ac:true},
+  {l:"Join\nWellness"},{l:"Align\nManager"},{l:"Contribute"},{l:"Lead L&L"},
+];
+const vwaves=[10,18,14,26,16,22,12,20,16,14];
+const nextStories=[
+  {assoc:"Anika Sharma · ",title:"Sustainable Logistics in SE Asia — what's actually working on the ground"},
+  {assoc:"",title:"Mars FY26 Roadmap: What it means for Supply Chain globally"},
+  {assoc:"Raj Patel · ",title:"Kellanova Week 1: an honest reflection from the operations floor"},
+  {assoc:"",title:"European Automation Update: full timeline and Q2 implications for Wrigley"},
+];
+let nextIdx=0;
+
+// ── BUILD ──
+function buildWave(){
+  const w=document.getElementById('wvf');
+  for(let i=0;i<52;i++){const h=Math.floor(Math.random()*26)+7;const d=document.createElement('div');d.className='wb'+(i<19?' a':'');d.style.cssText=`height:${h}px;flex:1;`;w.appendChild(d);}
+}
+
+function camSVG(size=20){return `<svg viewBox="0 0 24 24" style="width:${size}px;height:${size}px;fill:rgba(255,255,255,.3)"><path d="M12 15.5a3.5 3.5 0 110-7 3.5 3.5 0 010 7zM20.5 7H17l-1.5-2h-7L7 7H3.5A1.5 1.5 0 002 8.5v10A1.5 1.5 0 003.5 20h17a1.5 1.5 0 001.5-1.5v-10A1.5 1.5 0 0020.5 7z"/></svg>`;}
+
+function buildVoices(){
+  const s=document.getElementById('voicesScroll');
+  voiceCards.forEach(v=>{
+    const cls=v.featured?'voice-card featured':'voice-card regular';
+    const followLbl=v.following?'following':'';
+    s.innerHTML+=`<div class="${cls}">
+      <div class="assoc-badge">👤 Associate Voice</div>
+      <div class="voice-assoc">
+        <div class="voice-photo" style="background:${v.bg}">${v.initials}</div>
+        <div><div class="voice-name">${v.name}</div><div class="voice-role">${v.role} · ${v.loc}</div></div>
+      </div>
+      ${v.quote?`<div class="voice-quote">${v.quote}</div>`:''}
+      <div class="voice-title">${v.title}</div>
+      <div class="voice-meta">
+        <span class="voice-type">${v.type}</span>
+        <button class="follow-btn ${followLbl}" onclick="toggleFollow(this)">${v.following?'Following':'Follow'}</button>
+      </div>
+      <div class="human-voice-lbl">✍️ Human voice · read as written · no AI summary</div>
+    </div>`;
+  });
+}
+
+function buildStrip(){
+  const s=document.getElementById('strip');
+  stories.forEach((x,i)=>{
+    const relBadge=x.rel?'<div class="mc-rel">Relevant to you</div>':'';
+    const srcBadge=x.corp?'<div class="src-official" style="font-size:7px;padding:1px 5px">🏢 Official</div>':'<div class="src-assoc" style="font-size:7px;padding:1px 5px">👤 '+x.assoc+'</div>';
+    const aiLine=(!x.corp&&x.assoc)?`<div class="human-voice-lbl" style="font-size:9px;margin-bottom:4px">✍️ Human voice</div>`:(x.ai?`<div class="mc-ai">${x.ai}</div>`:'');
+    s.innerHTML+=`<div class="mc" onclick="toast('Opening story…')">
+      <div class="mc-img" style="background:${x.bg}">
+        <div class="mc-img-inner">${camSVG(24)}</div>
+        <div class="mc-img-ov"></div>
+        <div class="mc-img-tag">${srcBadge}</div>
+        ${relBadge}
+      </div>
+      <div class="mc-body">
+        ${aiLine}
+        <div class="mc-h">${x.h}</div>
+        <div class="mc-m"><span class="tg ${x.cls}">${x.tag}</span><span>${x.t}</span></div>
+      </div>
+      <button class="mc-bm" onclick="event.stopPropagation();toggleBm(this)">🔖</button>
+    </div>`;
+  });
+}
+
+function buildVStories(){
+  const s=document.getElementById('vsScroll');
+  vstories.forEach(v=>{
+    s.innerHTML+=`<div class="vs-card">
+      <div class="vs-bg" style="background:${v.bg}">${v.icon}</div>
+      <div class="vs-ov"></div>
+      ${v.corp?`<div class="vs-corp-icon">🏢</div>`:''}
+      <div class="vs-con">
+        ${!v.corp?`<div class="vs-assoc-av" style="background:${v.avBg}">${v.av}</div>`:''}
+        <div class="vs-name">${v.name}</div>
+        <div class="vs-type">${v.label}</div>
+      </div>
+    </div>`;
+  });
+}
+
+function buildJourneys(){
+  const g=document.getElementById('jg');
+  journeys.forEach(j=>{
+    g.innerHTML+=`<div class="jc" onclick="toast('Opening Journey: ${j.title}')">
+      <div class="jbg" style="background:${j.bg}">${j.e}</div>
+      <div class="jov"></div>
+      ${j.isNew?'<div class="jnew"></div>':''}
+      <div class="jco">
+        <div class="jbadge2">${j.badge}</div>
+        <div class="jt">${j.title}</div>
+        <div class="jst"><span>👁 ${j.s.split('·')[0]}</span><span>💬${j.s.split('·')[1]}</span></div>
+      </div>
+      <div class="jpb" style="width:${j.p}"></div>
+    </div>`;
+  });
+}
+
+function buildPrinciples(){
+  const p=document.getElementById('pl');
+  principles.forEach(x=>{
+    p.innerHTML+=`<div class="pc" onclick="toast('Viewing ${x.n} recognitions…')">
+      <div class="pi">${x.i}</div>
+      <div style="flex:1"><div class="pn">${x.n}</div><div class="pd">${x.d}</div></div>
+      <div class="pr2">
+        <div class="pc-cnt">${x.c.toLocaleString()}</div>
+        <div class="pc-lbl">this week</div>
+        <button class="prec" onclick="event.stopPropagation();toast('Recognizing for ${x.n} 🎉')">+ Recognize</button>
+      </div>
+    </div>`;
+  });
+}
+
+function buildLeaders(){
+  const l=document.getElementById('leaders');
+  const personSVG=`<svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>`;
+  leaders.forEach(x=>{
+    const waves=vwaves.map(h=>`<div class="vwb" style="height:${h}px"></div>`).join('');
+    l.innerHTML+=`<div class="lc">
+      <div class="lt">
+        <div class="lphoto">${personSVG}</div>
+        <div><div class="lname">${x.name}</div><div class="lrole">${x.role}</div></div>
+      </div>
+      <div class="vn">
+        <button class="vplay">▶</button>
+        <div class="vwave">${waves}</div>
+        <span class="vdur">0:45</span>
+      </div>
+      <div class="lq">"${x.q}"</div>
+    </div>`;
+  });
+}
+
+function buildComm(){
+  const c=document.getElementById('comm');
+  posts.forEach(x=>{
+    const reactions=x.isAssoc?`<div class="react-bar">
+      <button class="react-opt" onclick="toggleReact(this)">🙌 Inspiring</button>
+      <button class="react-opt" onclick="toggleReact(this)">💡 Insightful</button>
+      <button class="react-opt" onclick="toggleReact(this)">🌱 Purposeful</button>
+      <button class="react-opt" onclick="toggleReact(this)">❤️ Human</button>
+      <button class="react-opt" onclick="toggleReact(this)">🔥 Trending</button>
+    </div>`:'';
+    const spTxt=x.isAssoc?`Priya and ${x.l} others in Supply Chain`:`${x.l.toLocaleString()} views`;
+    c.innerHTML+=`<div class="post ${x.isAssoc?'assoc-post':'corp-post'}">
+      <div class="ph">
+        <div class="pav" style="background:${x.bg}">${x.i}</div>
+        <div><div class="pnm">${x.n}</div><div class="pro">${x.r}</div></div>
+        <div class="pbg ${x.bc}">${x.b}</div>
+      </div>
+      <div class="ptxt">${x.t}</div>
+      ${reactions}
+      <div class="pact">
+        <button class="pa">👥 ${spTxt}</button>
+        <button class="pa">🕐 ${x.a}</button>
+        ${x.isAssoc?'':`<div class="corp-source">🏢 Mars Official</div>`}
+      </div>
+    </div>`;
+  });
+}
+
+function buildTopVoices(){
+  const t=document.getElementById('topVoices');
+  topVoices.forEach(v=>{
+    t.innerHTML+=`<div class="tv-row">
+      <div class="tv-av" style="background:${v.bg}">${v.initials}</div>
+      <div class="tv-info"><div class="tv-name">${v.name}</div><div class="tv-role">${v.role}</div></div>
+      <div class="tv-eng">${v.eng} engaged</div>
+    </div>`;
+  });
+}
+
+function buildSteps(){
+  const s=document.getElementById('steps');
+  stepsData.forEach((x,i)=>{
+    s.innerHTML+=`<div class="stp"><div class="stp-c ${x.d?'dn':x.ac?'ac':''}">${x.d?'✓':i+1}</div><div class="stp-l ${x.ac?'ac':''}" style="white-space:pre-line">${x.l}</div></div>`;
+  });
+}
+
+// ── INTERACTIONS ──
+let playing=false,timer=null,prog=37,aiMode=false;
+
+function togglePlay(){
+  playing=!playing;
+  const b=document.getElementById('pbt');b.textContent=playing?'⏸':'▶';
+  document.querySelectorAll('.wb.a').forEach(w=>{w.style.animation=playing?`waveAnim ${.5+Math.random()*.5}s ease-in-out ${Math.random()*.3}s infinite`:'';});
+  if(playing){timer=setInterval(()=>{prog=Math.min(prog+.27,100);document.getElementById('pgf').style.width=prog+'%';const sc=Math.round((prog/100)*225),m=Math.floor(sc/60),s=sc%60;document.getElementById('el').textContent=`${m}:${s.toString().padStart(2,'0')}`;if(prog>=100){clearInterval(timer);playing=false;b.textContent='▶';}},1000);}else clearInterval(timer);
+}
+
+function seekBrief(e,bar){const r=bar.getBoundingClientRect();prog=Math.max(0,Math.min(100,(e.clientX-r.left)/r.width*100));document.getElementById('pgf').style.width=prog+'%';const sc=Math.round((prog/100)*225),m=Math.floor(sc/60),s=sc%60;document.getElementById('el').textContent=`${m}:${s.toString().padStart(2,'0')}`;}
+
+function toggleAI(){
+  aiMode=!aiMode;
+  const t=document.getElementById('aiToggle');
+  t.classList.toggle('active',aiMode);
+  toast(aiMode?'AI Briefing Mode ON — AI summaries lead each story':'AI Briefing Mode OFF — editorial headlines lead');
+}
+
+function toggleTldr(){
+  const el=document.getElementById('tldr');
+  const tog=document.getElementById('tldrToggle');
+  el.classList.toggle('open');
+  tog.textContent=el.classList.contains('open')?'▴ collapse':'▾ expand';
+}
+
+function toggleBm(id){
+  const el=typeof id==='string'?document.getElementById(id):id;
+  el.classList.toggle('saved');
+  toast(el.classList.contains('saved')?'Saved to your reading list 🔖':'Removed from reading list');
+}
+
+function toggleFollow(btn){
+  btn.classList.toggle('following');
+  btn.textContent=btn.classList.contains('following')?'Following':'Follow';
+  toast(btn.classList.contains('following')?'Following — you\'ll see their content in your companion ✓':'Unfollowed');
+}
+
+function toggleReact(btn){
+  const siblings=[...btn.parentElement.querySelectorAll('.react-opt')];
+  if(btn.classList.contains('reacted')){btn.classList.remove('reacted');}
+  else{siblings.forEach(b=>b.classList.remove('reacted'));btn.classList.add('reacted');}
+}
+
+function setTab(el,type){
+  [...el.parentElement.querySelectorAll('.ft')].forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  const banner=document.getElementById('assocBanner');
+  banner.classList.toggle('show',type==='voices');
+}
+
+function setCTab(el){[...el.parentElement.querySelectorAll('.ct')].forEach(b=>b.classList.remove('on'));el.classList.add('on');}
+
+function openStory(){toast('Opening: Net-Zero by 2050 — How the Kellanova Integration is Reshaping Supply Chain');}
+
+function doAsk(){const inp=document.getElementById('ai-inp'),v=inp.value.trim();if(!v)return;toast('✦ Thinking: "'+v.substring(0,40)+(v.length>40?'…':'')+'"');inp.value='';}
+function doChip(btn){document.getElementById('ai-inp').value=btn.textContent;doAsk();}
+
+function nextStory(){
+  nextIdx=(nextIdx+1)%nextStories.length;
+  const ns=nextStories[nextIdx];
+  document.getElementById('nextAssoc').textContent=ns.assoc;
+  document.getElementById('nextTitle').textContent=ns.title;
+  toast('Opening next story…');
+}
+
+// Reading progress
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement.scrollHeight-window.innerHeight;
+  const pct=Math.round((window.scrollY/h)*100);
+  document.getElementById('read-progress').style.width=pct+'%';
+  // rotate next story suggestion
+  const idx=Math.min(Math.floor(pct/25),nextStories.length-1);
+  if(idx!==nextIdx){
+    nextIdx=idx;
+    const ns=nextStories[nextIdx];
+    document.getElementById('nextAssoc').textContent=ns.assoc;
+    document.getElementById('nextTitle').textContent=ns.title;
+  }
+});
+
+document.querySelectorAll('.n2').forEach(b=>{b.addEventListener('click',()=>{document.querySelectorAll('.n2').forEach(x=>x.classList.remove('on'));b.classList.add('on');});});
+
+function toast(msg){
+  let t=document.getElementById('_toast');
+  if(!t){t=document.createElement('div');t.id='_toast';t.style.cssText=`position:fixed;bottom:70px;left:50%;transform:translateX(-50%) translateY(16px);background:linear-gradient(135deg,#1E2B7A,#3B28C8);border:1px solid rgba(255,255,255,.2);border-radius:11px;padding:10px 20px;font-size:12px;color:#fff;z-index:9999;opacity:0;transition:all .28s;max-width:400px;text-align:center;pointer-events:none;`;document.body.appendChild(t);}
+  t.textContent=msg;t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';
+  clearTimeout(t._t);t._t=setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(-50%) translateY(10px)';},2600);
+}
+
+buildWave();buildVoices();buildStrip();buildVStories();buildJourneys();buildPrinciples();buildLeaders();buildComm();buildTopVoices();buildSteps();
+</script>
+</body>
+</html>
